@@ -3,55 +3,94 @@ from spacy.symbols import *
 
 nlp = spacy.load('en_core_web_sm')
 
-# TOOLS:
-#   - python
-#   - regex
-#   - spacy
-#   - textacy
-
-# 1. trim descriptions
-#   - trailing ", another version" or ", another pose"
-#   - remove blocks of named individuals: including, clockwise, from left, to right, standing, seated, kneeling, front row, first row, back row, last row, second row, middle row
-
-# 2. handle common variants:
-#   - "Portrait of X"
-#   - "Group Portrait of X"
-#   - "Members of X"
-
-# 3. handle other variants:
-#   - subject, verb, object?
-#   - trailing prepositional phrases? ("at X")
+# trim unneccessary leading phrases
+def trim_leading(text):
+    return re.sub('^(Group )?portrait(,| of) ', '', text, flags=re.I)
 
 # trim unneccessary trailing phrases
 def trim_trailing(text):
-    return re.sub(', another (version|pose)\s*$', '', text)
+    return re.sub(', another (version|pose)\s*$', '', text, flags=re.I)
 
-# remove blocks of named individuals marked by e.g. "from left:"
-def remove_individuals(text):
-    return re.sub('', '', text)
+with open('ecatalog.csv', 'r+') as csvfile:
+    writer = csv.writer(csvfile)
 
-# generator function to yield noun part subtrees
-# from: https://stackoverflow.com/a/33512175
-np_labels = set([nsubj, nsubjpass, dobj, iobj]) # Probably others too
-def iter_nps(doc):
-    for word in doc:
-        if word.dep in np_labels:
-            yield word.subtree
-
-with open('ecatalog.csv', 'rb') as csvfile:
     rows = csv.reader(csvfile)
-    for index, row in enumerate(rows):
-        if index == 0: continue
-        title = trim_trailing(unicode(row[3]))
-        title = remove_individuals(title)
-        if title != unicode(row[3]): print(title)
-
+    for row in rows:
+        title = trim_leading(trim_trailing(unicode(row[3])))
         doc = nlp(title)
 
-        # for t in textacy.extract.subject_verb_object_triples(doc):
-        #     for word in t:
-        #         print word.text
+        ## print info for each token
+        # for token in doc:
+        #     print token.text, token.pos_, token.tag_, token.dep_
+
+        new_title = []
+        root_np = None
+        root_index = None
+
+        # find prepositional phrases
+        PP_PATTERN = '<ADP> <DET>? <NUM>* (<ADJ> <PUNCT>? <CONJ>?)* (<NOUN>|<PROPN> <PART>?)+'
+        pp_matches = list(textacy.extract.pos_regex_matches(doc, PP_PATTERN))
         
-        # for np in iter_nps(doc):
-        #     for word in np:
-        #         print(word, word.dep_)
+        # find verbs
+        VERB_PATTERN = '<ADV>*<VERB>'
+        verb_matches = list(textacy.extract.pos_regex_matches(doc, VERB_PATTERN))
+
+        # find nominal subject or root noun phrase
+        noun_chunks = enumerate(doc.noun_chunks)
+        np_index = None
+        for index, chunk in noun_chunks:
+            if chunk.root.dep_ in ['nsubj', 'ROOT']:
+                root_np = chunk
+                root_index = chunk.root.i
+                np_index = index
+                new_title.append(chunk.text)
+                break
+
+        # check children of root np
+        child_prep_phrases = []
+        if root_np and root_np.root.children:
+            for child in root_np.root.children:
+                # if child is a coordinating conjunction
+                if child.pos_ == 'CCONJ':
+                    conjunction = child.text
+
+                    # loop through noun phrases to find object of this conjunction
+                    for i, c in noun_chunks:
+                        if i <= np_index:
+                            continue
+                        
+                        # print c.text, c.root.head, c.root.head.i
+                        if c.root.head.i == root_index and c.root.dep_ == 'conj':
+                            new_title.append(conjunction)
+                            new_title.append(c.text)
+
+                # if a child is an adposition
+                if child.pos_ == 'ADP':
+                    for pp in pp_matches:
+                        if pp.root.i == child.i:
+                            new_title.append(pp.text)
+                            child_prep_phrases.append(pp.root.i)
+            
+            # get verbs
+            # for verb in verb_matches:
+            #     print verb.text, [c for c in verb.root.children]
+
+            # get location from late prepositional phrases
+            trailing_pp = []
+            for pi, pp in enumerate(reversed(pp_matches)):
+                if pi < 2 and pp.root.text in ['in', 'at'] and pp.root.i not in child_prep_phrases:
+                    trailing_pp.append(pp.text)
+            new_title.extend(reversed(trailing_pp))
+
+            # get location from trailing proper noun(s) preceded by a comma
+            propn_pattern = '<PUNCT> <PROPN>+$'
+            for propn in textacy.extract.pos_regex_matches(doc, propn_pattern):
+                if propn.text[0] == ',':
+                    new_title.append(propn.text)
+
+        print '\n', title
+        print " ".join(new_title)
+    
+        # write new row
+        row.append(" ".join(new_title))
+        writer.writerow(row)
