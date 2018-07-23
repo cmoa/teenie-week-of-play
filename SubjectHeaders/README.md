@@ -12,4 +12,4 @@ To get started:
 
 
 `teenie.html` contains the original code completed for the hackathon.
-`teenie2.html` contains additional code that looks up the terms from other sources (TGM, LCClassification, etc.), it does not include a guess of location
+`teenie2.html` contains additional code that looks up the terms from other sources (TGM, LCClassification, etc.), it does not include a guess of location.
