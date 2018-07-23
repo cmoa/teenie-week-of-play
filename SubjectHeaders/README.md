@@ -11,5 +11,5 @@ To get started:
 - In a browser, visit `http://localhost:8000/teenie.html`
 
 
-`teenie.html` contains the original code completed for the hackathon
+`teenie.html` contains the original code completed for the hackathon.
 `teenie2.html` contains additional code that looks up the terms from other sources (TGM, LCClassification, etc.), it does not include a guess of location
