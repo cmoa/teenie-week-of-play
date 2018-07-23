@@ -112,28 +112,6 @@
 			}
 
 
-			function mostLikelyPlace(place) {
-				var locationGuess = "";
-			 	place.forEach(function (array, index) {
-			 		var unique = array.filter(function(item, i, ar){ return ar.indexOf(item) === i; }).length;
-					if(array.length == 0) return null;
-				    var modeMap = {};
-				    var maxEl = array[0], maxCount = 1;
-				    for(var i = 0; i < array.length; i++) {
-				        var el = array[i];
-				        if(modeMap[el] == null) modeMap[el] = 1;
-				        else modeMap[el]++;  
-				        if(modeMap[el] > maxCount) {
-				            maxEl = el;
-				            maxCount = modeMap[el];
-				        }
-				    }
-				    var percent =  Math.round(array.length/subjects.length * 100);
-				    $("#locationGuess").append("<div><span class='locationGuessLineLabel'>"+placeStrings[index]+"</span><span class='locationGuessLine'>"+maxEl+"</span><span class='locationGuessPercent'>("+percent+"%)</span><div>");
-				});
-			}
-
-
 			function searchApprovedHeadings(subject, index) {
 
 				$("#SHrow"+index).append("<td class='exitstingHeaderCell' id='SHcell"+index+"'></td>");
@@ -207,17 +185,10 @@
 			}
 
 			function run() {
-				$("#loader").removeClass("hide");
-				// Call it on our subjects list
 				for (var x = 0; x < subjects.length; x++) { 
 					extractInfoFromSH(x); 
 					searchApprovedHeadings(newSubjects[x].subject, x);
 				}
-
-				timeout1 = window.setTimeout(() => {
-					mostLikelyPlace([country, state, county, city, neighborhood, establishment]);
-					$("#loader").addClass("hide");
-				}, 5000);
 			}
 
 
@@ -248,8 +219,6 @@
 			}
 
 			function loadPic() {
-				//rest vars
-				clearTimeout(timeout1);
 
 				var newPic = parsedCSV[CSVindex];
 				$("#pic").attr("src", "images/"+newPic[1]+".jpg");
@@ -267,7 +236,6 @@
 
 				// reset html
 				$("#subjectHeaders").html("<tr><th>Existing Subject Header</th><th>Suggested Subject Headers</th></tr>")
-				$("#locationGuess").html("<tr id='locationHeader'><td>Location Guess</td></tr><tr id='locationInfo'><td>Percentages indicate how many existing subject headers implied the location.<td></tr>");
 				run();
 
 			}
@@ -393,7 +361,6 @@
 	    <img id="pic" style="width:300px;height:auto;"/>
 	    <div id="nextpic">--></div>
 	</div>
-    <div id="loader"></div>
 	<table id="subjectHeaders">
 		<tr>
 			<th>Existing Subject Header</th>
@@ -401,10 +368,6 @@
 			<th>Reasons Changed</th>
 			<th>Related Subject Headings</th>
 		</tr>
-	</table>
-	<table id="locationGuess">
-		<tr id="locationHeader"><td>Location Guess<td></tr>
-		<tr id="locationInfo"><td>Percentages indicate how many existing subject headers implied the location.<td></tr>
 	</table>
     <div style="height:30px;"/>
   </body>
