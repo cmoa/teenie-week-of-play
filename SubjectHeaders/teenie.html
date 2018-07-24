@@ -1,0 +1,393 @@
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script>
+
+		
+
+		$(document).ready(function () {
+			var parsedCSV;
+			var CSVindex = 1;
+
+			var timeout1;
+			var timeout2;
+			var timeout3;
+
+			var subjects = [];
+
+			var newSubjects = [];
+
+			var country = [];
+			var state = [];
+			var county = [];
+			var city = [];
+			var neighborhood = [];
+			var establishment = [];
+
+			var placeStrings = ["Country", "State", "County", "City", "Neighborhood", "Establishment"];
+
+			function extractInfoFromSH(index) {
+				// create an empty object to put the extracted information
+				newSubjects[index] = {};
+				newSubjects[index].reasonschanged = [];
+
+
+				var subjectLine = subjects[index];
+				$("#subjectHeaders").append("<tr id='SHrow"+index+"' class='subjectHeaderRow'><td class='exitstingHeaderCell'>"+subjectLine+"</td><tr>")
+
+				var split = [];
+				var place = "";
+				if (subjectLine.includes("--")) {
+					split = subjectLine.split("--");
+					if (split[0] !== undefined) { 
+						newSubjects[index].subject = split[0]; 
+						newSubjects[index].reasonschanged.push("Removed location qualifier");
+					} else { newSubjects[index].subject = subjectLine; }
+					for (var i = 1; i < split.length; i++) { place += split[i] + "+"; }
+				} else if (subjectLine.includes("(") && subjectLine.includes(")")) {
+					split = subjectLine.split('(');
+					establishment.push(split[0]);
+					newSubjects[index].subject = subjectLine;
+					for (var i = 1; i < split.length; i++) { place = split[0] + split[i].split(')')[0]; }
+				} else {
+					newSubjects[index].subject = subjectLine;
+				}
+
+				if (place !== "") { getPlaceFromAddress(place, index); }
+				newSubjects[index].prevSH = subjectLine;
+
+			}
+
+
+			function getPlaceFromAddress(place, index)
+			{
+				var url = 'http://allorigins.me/get?url='+
+						   encodeURIComponent("https://maps.googleapis.com/maps/api/geocode/json?address="+
+						   place+
+						   "&key=AIzaSyCVx8lSSE73bw565GnKpAd9QGcS5B0TVxU")+
+						   '&callback=?';
+
+				$.ajax({
+			        type: 'GET',
+			        url: url,
+			        dataType: 'json',
+			        success: function(data) {
+			        	var d = JSON.parse(data.contents);
+						if (d.status === "OK") {
+							var addressComponents = d.results[0].address_components;
+							for (var i = 0; i<addressComponents.length; i++) {
+								var addressComponentTypes = addressComponents[i].types;
+								for (var j = 0; j < addressComponentTypes.length; j++) {
+									var type = addressComponentTypes[j];
+									switch(type) {
+									    case "country":
+									        newSubjects[index].country = addressComponents[i].long_name;
+									        country.push(addressComponents[i].long_name);
+									        break;
+									    case "administrative_area_level_1":
+									        newSubjects[index].state = addressComponents[i].long_name;
+									        state.push(addressComponents[i].long_name);
+									        break;
+								      	case "administrative_area_level_2":
+								        	newSubjects[index].county = addressComponents[i].long_name;
+								        	county.push(addressComponents[i].long_name);
+									        break;
+								        case "locality":
+								        	newSubjects[index].city = addressComponents[i].long_name;
+								        	city.push(addressComponents[i].long_name);
+									        break;
+								       	case "neighborhood":
+								        	newSubjects[index].neighborhood = addressComponents[i].long_name;
+								        	neighborhood.push(addressComponents[i].long_name);
+									        break;
+									    default:
+									        break;
+									}
+								}
+							}
+						}
+			        },
+			        data: {},
+			        async: false
+			    });
+			}
+
+
+			function mostLikelyPlace(place) {
+				var locationGuess = "";
+			 	place.forEach(function (array, index) {
+			 		var unique = array.filter(function(item, i, ar){ return ar.indexOf(item) === i; }).length;
+					if(array.length == 0) return null;
+				    var modeMap = {};
+				    var maxEl = array[0], maxCount = 1;
+				    for(var i = 0; i < array.length; i++) {
+				        var el = array[i];
+				        if(modeMap[el] == null) modeMap[el] = 1;
+				        else modeMap[el]++;  
+				        if(modeMap[el] > maxCount) {
+				            maxEl = el;
+				            maxCount = modeMap[el];
+				        }
+				    }
+				    var percent =  Math.round(array.length/subjects.length * 100);
+				    $("#locationGuess").append("<div><span class='locationGuessLineLabel'>"+placeStrings[index]+"</span><span class='locationGuessLine'>"+maxEl+"</span><span class='locationGuessPercent'>("+percent+"%)</span><div>");
+				});
+			}
+
+
+			function searchApprovedHeadings(subject, index) {
+				var url = "http://allorigins.me/get?url=http://id.loc.gov/search/?q="+subject+"%20cs:http://id.loc.gov/authorities/subjects";
+				$.getJSON(url, function(data){
+					var contents = $(data.contents);
+					var resultsTable = $(contents.find("table.id-std>tbody>tr"));
+					if (resultsTable.length > 0) {
+						var approvedHeading = $($($(resultsTable[0]).children()[1]).children()[0]).html();
+						console.log(approvedHeading);
+						var lookup = $($($(resultsTable[0]).children()[1]).children()[0]).attr("href");
+						var url = "https://id.loc.gov"+lookup+".html";
+						if (approvedHeading !== subjects[index]) {
+							newSubjects[index].subject = approvedHeading;
+							newSubjects[index].reasonschanged.push("Found an approved subject");
+						}
+						newSubjects[index].url = url;
+							//$("#newSubjectsHeaderList").append(approvedHeading+"<br>");
+					} else {
+						url = "http://allorigins.me/get?url=http://id.loc.gov/search/?q="+subject+"%20cs:http://id.loc.gov/authorities/names";
+						$.getJSON(url, function(data){
+							var contents = $(data.contents);
+							var resultsTable = $(contents.find("table.id-std>tbody>tr"));
+							if (resultsTable.length > 0) {
+								var approvedHeading = $($($(resultsTable[0]).children()[1]).children()[0]).html();
+								var lookup = $($($(resultsTable[0]).children()[1]).children()[0]).attr("href");
+								var url = "https://id.loc.gov"+lookup+".html";
+								if (approvedHeading !== subjects[index]) {
+									newSubjects[index].subject = approvedHeading;
+									newSubjects[index].reasonschanged.push("Found an approved name");
+								}
+							}
+							newSubjects[index].url = url;
+						});
+					}
+				});
+			}
+
+			function run() {
+				$("#loader").removeClass("hide");
+				// Call it on our subjects list
+				for (var x = 0; x < subjects.length; x++) { 
+					extractInfoFromSH(x); 
+					searchApprovedHeadings(newSubjects[x].subject, x);
+				}
+
+				timeout1 = window.setTimeout(() => {
+					mostLikelyPlace([country, state, county, city, neighborhood, establishment])
+				}, 4000);
+
+				// Put the new subjects and reasons changed in
+				timeout2 = window.setTimeout(() => {
+					for (var i = 0; i < newSubjects.length; i++) {
+						$("#SHrow"+i).append("<td class='exitstingHeaderCell'>"+newSubjects[i].subject+"</td>")
+						var reasons = "";
+						for (var j = 0; j < newSubjects[i].reasonschanged.length; j++) {
+							reasons+= newSubjects[i].reasonschanged[j]+ "<br>"
+						}	
+						$("#SHrow"+i).append("<td class='exitstingHeaderCell'>"+reasons+"</td>")
+						if (newSubjects[i].url !== undefined) {
+							$("#SHrow"+i).append("<td class='exitstingHeaderCell'><a target='_blank' href='"+newSubjects[i].url+"'>HTML</a></td>");
+						}
+					}
+					$("#loader").addClass("hide");
+				}, 5000);
+			}
+
+
+			$("#nextpic").click(() => { nextPic(); });
+			$("#prevpic").click(() => { prevPic(); });
+
+			function nextPic() {
+				CSVindex++;
+				if (CSVindex > parsedCSV.length) {
+					CSVindex = 1;
+				}
+				CSVindex = getRandomInt(1, parsedCSV.length);
+				loadPic();
+			}
+
+			function getRandomInt(min, max) {
+			  min = Math.ceil(min);
+			  max = Math.floor(max);
+			  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+			}
+
+			function prevPic() {
+				CSVindex--;
+				if (CSVindex < 1) {
+					CSVindex = parsedCSV.length-1;
+				}
+				loadPic();
+			}
+
+			function loadPic() {
+				//rest vars
+				clearTimeout(timeout1);
+				clearTimeout(timeout2);
+				clearTimeout(timeout3);
+
+				var newPic = parsedCSV[CSVindex];
+				$("#pic").attr("src", "images/"+newPic[1]+".jpg");
+
+				var subjectsString= newPic[9];
+				subjects = subjectsString.split("\n");
+				newSubjects = [];
+
+				country = [];
+				state = [];
+				county = [];
+				city = [];
+				neighborhood = [];
+				establishment = [];
+
+				// reset html
+				$("#subjectHeaders").html("<tr><th>Existing Subject Header</th><th>Suggested Subject Header</th><th>Reasons Changed</th><th>Related Subject Headings</th></tr>")
+				$("#locationGuess").html("<tr id='locationHeader'><td>Location Guess</td></tr><tr id='locationInfo'><td>Percentages indicate how many existing subject headers implied the location.<td></tr>");
+				run();
+
+			}
+
+
+			d3.text("ecatalog.csv", function(data) {
+	            parsedCSV = d3.csv.parseRows(data);
+	            loadPic();
+	        });
+			
+
+
+		});
+
+	</script>
+	<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #pic {
+      	padding-left: 30px;
+      	padding-top: 30px;
+      }
+
+      #locationGuess, #subjectHeaders {
+      	padding: 30px;
+      	padding-bottom: 0px;
+      	margin: auto;
+      }
+
+      #locationHeader, #oldSubjectsHeader, #newSubjectsHeader {
+      	font-weight: bold;
+      	padding-bottom: 5px;
+      }
+
+      #locationInfo {
+      	opacity: 0.5;
+      	padding-bottom: 10px;
+      }
+
+      .locationGuessLine{
+      	min-width: 160px;
+      	padding-left: 5px;
+      	display: inline-block;
+      }
+
+      .locationGuessLineLabel{
+      	min-width: 160px;
+      	padding-left: 5px;
+      	display: inline-block;
+      	font-weight: bold;
+      }
+
+      #newSubjectsHeaderList, #oldSubjectsHeaderList {
+      	display: block;
+      }
+
+      .locationGuessPercent {
+      	padding-left: 20px;
+      	font-weight: normal;
+      	opacity: 0.5;
+      	display: inline-block;
+      	width: 50px;
+      	text-align: right;
+      }
+
+      th {
+      	text-align: left;
+      	width: 200px;
+      	padding-bottom: 10px;
+      }
+
+      td {
+      	padding: 5px;
+
+      }
+
+      tr:nth-child(even) {background: #efefef}
+	  tr:nth-child(odd) {background: #FFF}
+
+	  #nextpic, #prevpic{
+	  	cursor: pointer;
+	  	padding-left: 30px;
+	  	padding-top: 30px;
+	  	display: inline-block;
+	  	font-size: 36px;
+	  	opacity: 0.5;
+	  }
+
+	   #loader {
+		    border: 16px solid #ccc; 
+		    border-top: 16px solid #999; 
+		    border-radius: 50%;
+		    width: 20px;
+		    height: 20px;
+		    margin: auto;
+		    animation: spin 2s linear infinite;
+		}
+
+		@keyframes spin {
+		    0% { transform: rotate(0deg); }
+		    100% { transform: rotate(360deg); }
+		}
+
+		.hide {
+			display: none !important;
+		}
+
+    </style>
+</head>
+<body>
+	<div style="margin:auto;width:500px;">
+		<!--<div id="prevpic"><--</div> -->
+	    <img id="pic" style="width:300px;height:auto;"/>
+	    <div id="nextpic">--></div>
+	</div>
+    <div id="loader"></div>
+	<table id="subjectHeaders">
+		<tr>
+			<th>Existing Subject Header</th>
+			<th>Suggested Subject Header</th>
+			<th>Reasons Changed</th>
+			<th>Related Subject Headings</th>
+		</tr>
+	</table>
+	<table id="locationGuess">
+		<tr id="locationHeader"><td>Location Guess<td></tr>
+		<tr id="locationInfo"><td>Percentages indicate how many existing subject headers implied the location.<td></tr>
+	</table>
+    <div style="height:30px;"/>
+  </body>
