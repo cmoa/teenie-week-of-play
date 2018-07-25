@@ -144,7 +144,9 @@ def extract_entities_Stanford(text):
 
 csvfile = open('data/ecatalogResave2.csv', 'rb') 
 
-saveWithNewData = open('data/ecatalog-newData-3.csv', 'w')
+
+#saveWithNewData = open('data/ecatalog-newData-3.csv', 'w')
+saveWithNewData = open('data/ecatalog-both.csv', 'w')
 writeNewCsv = csv.writer(saveWithNewData)
 
 #csvfile = codecs.open('data/ecatalog.csv', 'rU', 'utf-8')

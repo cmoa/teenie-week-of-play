@@ -38,7 +38,7 @@ def nametoString(lstName):
 
 csvfile = open('data/ecatalogResave2.csv', 'rb') 
 
-saveWithNewData = open('data/ecatalog-newData.csv', 'w')
+saveWithNewData = open('data/ecatalog-NLTK.csv', 'w')
 writeNewCsv = csv.writer(saveWithNewData)
 
 #csvfile = codecs.open('data/ecatalog.csv', 'rU', 'utf-8')
