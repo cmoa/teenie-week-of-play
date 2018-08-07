@@ -13,7 +13,7 @@ Our Week of Play participants included:
 
 During the week we explored four areas: Auto shortening titles, cleaning up existing subject headings, extracting names and and locations from descriptions using NER, and verifying face recognition data using Amazon Mechanical Turk. 
 
-###Subject Headings
+### Subject Headings
 
 **Rational:** Having properly assigned Library of Congress (LOC) approved subject headings is part of having a processed archive. Currently the Teenie collection has subject headings, but they don't follow best practice. 
 
@@ -22,20 +22,20 @@ During the week we explored four areas: Auto shortening titles, cleaning up exis
 **Results:**
 
 Correctly removing location qualifiers and suggest an approved subject heading. 
-![Subject headings 1](SubjectHeaders/screenshots/Screen Shot 2018-07-20 at 3.10.53 PM.png)
+![Subject headings 1](SubjectHeaders/screenshots/Screen\ Shot\ 2018-07-20\ at\ 3.10.53\ PM.png)
 
 Removing location qualifiers and generating a possibly racist suggestions on coaches. 
-![Subject headings 1](SubjectHeaders/screenshots/Screen Shot 2018-07-20 at 3.11.09 PM.png)
+![Subject headings 1](SubjectHeaders/screenshots/Screen\ Shot\ 2018-07-20\ at\ 3.11.09\ PM.png)
 
 
 Correctly removing location qualifiers and suggest an approved subject heading for Selma Burke.
-![Subject headings 1](SubjectHeaders/screenshots/Screen Shot 2018-07-20 at 3.13.15 PM.png)
+![Subject headings 1](SubjectHeaders/screenshots/Screen\ Shot\ 2018-07-20\ at\ 3.13.15\ PM.png)
 
 
 **Future Work:** Combine this work with the NER location extraction 
 
 
-###Natural Entity Recognition
+### Natural Entity Recognition
 
 **Rational:** Currently the majority of the Teenie Harris photographs have long descriptive titles that contain locations and names. Extracting the location and name data from the longer description would lay the ground work for geotagging the images and identifying all the people in them.
 
@@ -68,7 +68,7 @@ Here are a few where it failed to extract the names correctly:
 
 **Future Work:** This is a promising approach for applying a simple technique to  clean archival metadata. It would improve the script significantly to give it a list of Pittsburgh locations to check against and to teach it to recognize nick-names. Doing the process of separating names from the larger description is essential to bridging the gap between the STFCI's work visually identifying the figures in the image and linking those figures with an actual name. 
 
-###Mechanical Turk
+### Mechanical Turk
 
 **Rational:** The STFCI applied face recognition across the entire collection and generated 3452 potential matches. Each match comes with a score of how strong the match is. This process generated a range of results.Some matches are simply duplicates of images across the collections. 
 Some matches are slightly different images from the same shoot.
@@ -92,7 +92,7 @@ Since the project generated such a range of results it is necessary to have all 
 
 
 
-###Auto Shortening Titles
+### Auto Shortening Titles
 
 **Rational:** The titles are currently paragraph descriptions and too long to use on many labels/credits. Currently Dominique has to manually shorten each title on an as needed basis. To reduce this work load and lay the ground work for applying it across the collection, we investigated automatically suggesting shortened titles. 
 
