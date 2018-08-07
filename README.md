@@ -22,17 +22,60 @@ During the week we explored four areas: Auto shortening titles, cleaning up exis
 **Results:**
 
 Correctly removing location qualifiers and suggest an approved subject heading. 
-![Subject headings 1](SubjectHeaders/screenshots/Screen\ Shot\ 2018-07-20\ at\ 3.10.53\ PM.png)
+![Subject headings 2](README-Assets/subjectHeading-1.png)
 
 Removing location qualifiers and generating a possibly racist suggestions on coaches. 
-![Subject headings 1](SubjectHeaders/screenshots/Screen\ Shot\ 2018-07-20\ at\ 3.11.09\ PM.png)
+![Subject headings 1](README-Assets/subjectHeading-2.png)
 
 
 Correctly removing location qualifiers and suggest an approved subject heading for Selma Burke.
-![Subject headings 1](SubjectHeaders/screenshots/Screen\ Shot\ 2018-07-20\ at\ 3.13.15\ PM.png)
+![Subject headings 1](README-Assets/subjectHeading-3.png)
 
 
-**Future Work:** Combine this work with the NER location extraction 
+**Future Work:** Combine this work with the NER location extraction to more accurately determine where the photo was taken. Feed in the descriptions to suggest new subject headings. 
+
+### Auto Shortening Titles
+
+**Rational:** The titles are currently paragraph descriptions and too long to use on many labels/credits. Currently Dominique has to manually shorten each title on an as needed basis. To reduce this work load and lay the ground work for applying it across the collection, we investigated automatically suggesting shortened titles. 
+
+**Approach:** We used the python modules spacy and textacy to break each description down into a part of speech. It detects the root phrase and all it's dependencies and removes all other unnessesary phrases.
+
+**Results:**
+Before: Eight members of Ebenezer Little Rens basketball team posed in gymnasium
+
+After: Eight members of Ebenezer Little Rens basketball team in gymnasium
+
+Before: Group portrait of fifteen South Hills High School basketball players, kneeling, left to right: John Bolla, Ray Sineway, John Carr, Henry Hemphill, Paul Rue and John Patterson; standing: Harry Guldatti, Tony Jeffries, Ken wade, Cal Jones, Paul Dorsett, Coach Bruce J. Weston, Carl Wade, Ulna Calloway, Jack Kress, and Andy Dick
+
+After: fifteen South Hills High School basketball players
+
+
+Before:Children, including Cub Scouts and Brownies, posing on grandstand with television personalities Lolo and Marty Wolfson, with sign for TV Safety Rangers, at WTAE studio
+
+After: Children at WTAE studio
+
+Before: Mal Goode, and woman posing beside Dodge car, at 1959 Pittsburgh Courier Home Service Fair, Syria Mosque
+
+After: Mal Goode and woman at 1959 Pittsburgh Courier Home Service Fair , Syria Mosque
+
+Before: Nat King Cole, Harold Keith, George Pitts, and Gulf Oil executive Roy Kohler, posed in Carlton House for Capitol Records press party
+
+After: Nat King Cole in Carlton House
+
+
+Before:Group portrait of clergy and church leaders, from left, seated: Rev. E. W. Gantt, Rev. E. F. Smith, Rev. Eugene E. Morgan, Bishop Stephen G. Spottswood, Rev. A. E. Harris, Rev. A.L. Pierce, and Rev. C. C. Nobles; standing: Rev. W. C. Ardrey, Dave Williamson, Rev. C. C. Ware, Willa Mae Rice, Mrs. B. F. Wright, P. L. Prattis, Rev. F. D. Porter, Rev. W. T. Kennedy, Rev. B. F. Wright, Rev. A. Nicholson, Rev. W. F. Moses, Rev. M. L. Banner, Rev. Allie Mae Johnson, Rev. L. Comer, Rev. A. L. Fuller, and Rev. Charles Foggie, posed in Wesley Center AME Zion Church for meeting on AMICO Corp.
+
+After: clergy and church leaders
+
+Before: Men and women, including Prince "Big Blue" Bruce and Mrs. Bruce gathered around their son, John N. Bruce in U. S. Army uniform and holding little boy, in Bruce home, Rose Street
+
+After: Men and women in U. S. Army uniform in Bruce home , Rose Street
+
+Before: Board of Education of Central Baptist Church members, seated, from left: Josephine Moore, Edith Venable, guest of honor; Rev. W. Augustus Jones, Mrs. Isaac Green, and Bell Lunn; standing:  A.D. Taylor, Andrew Brookins, Catherine Graham, Robert Bailey, Evelyn Young, Isaac Willoughby, Christine Jones, Jack Fisher, Oplenell Rockamore, Clarence Payne, and Helen Thompson, gathered in Central Baptist Church for baby shower, another version
+
+After: Board of Education in Central Baptist Church
+
+**Future Work:** Standardizing to use approved verbs. Combining with NER to correctly identify locations and lists of names so they can be revmoved. 
 
 
 ### Natural Entity Recognition
@@ -86,51 +129,9 @@ Since the project generated such a range of results it is necessary to have all 
 
 **Future Work:** In this experiment we manually coded the surveys. In future we could use the Mturk API to automatically generate these surveys and feed the results directly back into json. We could automatically get more confirmation on matches in which there is more disagreement. To scale this across all 3456 matches would cost a minimum of $520. We generated that cost based off the following assumptions. 
 
-* Reasonable mechanical turk rate at 4 cents per each match. (20 cents for  answering 5 questions)  * Confirming the top 450 matches twice = $36.00 
+* Reasonable mechanical turk rate at 4 cents per each match. (20 cents for  answering 5 questions)
+* Confirming the top 450 matches twice = $36.00 
 * Confirming the remaining 3,002 four times = $480.32 
  
 
 
-
-### Auto Shortening Titles
-
-**Rational:** The titles are currently paragraph descriptions and too long to use on many labels/credits. Currently Dominique has to manually shorten each title on an as needed basis. To reduce this work load and lay the ground work for applying it across the collection, we investigated automatically suggesting shortened titles. 
-
-**Approach:** We used the python modules spacy and textacy to break each description down into a part of speech. 
-
-**Results:**
-Before: Eight members of Ebenezer Little Rens basketball team posed in gymnasium
-
-After: Eight members of Ebenezer Little Rens basketball team in gymnasium
-
-Before: Group portrait of fifteen South Hills High School basketball players, kneeling, left to right: John Bolla, Ray Sineway, John Carr, Henry Hemphill, Paul Rue and John Patterson; standing: Harry Guldatti, Tony Jeffries, Ken wade, Cal Jones, Paul Dorsett, Coach Bruce J. Weston, Carl Wade, Ulna Calloway, Jack Kress, and Andy Dick
-
-After: fifteen South Hills High School basketball players
-
-
-Before:Children, including Cub Scouts and Brownies, posing on grandstand with television personalities Lolo and Marty Wolfson, with sign for TV Safety Rangers, at WTAE studio
-
-After: Children at WTAE studio
-
-Before: Mal Goode, and woman posing beside Dodge car, at 1959 Pittsburgh Courier Home Service Fair, Syria Mosque
-
-After: Mal Goode and woman at 1959 Pittsburgh Courier Home Service Fair , Syria Mosque
-
-Before: Nat King Cole, Harold Keith, George Pitts, and Gulf Oil executive Roy Kohler, posed in Carlton House for Capitol Records press party
-
-After: Nat King Cole in Carlton House
-
-
-Before:Group portrait of clergy and church leaders, from left, seated: Rev. E. W. Gantt, Rev. E. F. Smith, Rev. Eugene E. Morgan, Bishop Stephen G. Spottswood, Rev. A. E. Harris, Rev. A.L. Pierce, and Rev. C. C. Nobles; standing: Rev. W. C. Ardrey, Dave Williamson, Rev. C. C. Ware, Willa Mae Rice, Mrs. B. F. Wright, P. L. Prattis, Rev. F. D. Porter, Rev. W. T. Kennedy, Rev. B. F. Wright, Rev. A. Nicholson, Rev. W. F. Moses, Rev. M. L. Banner, Rev. Allie Mae Johnson, Rev. L. Comer, Rev. A. L. Fuller, and Rev. Charles Foggie, posed in Wesley Center AME Zion Church for meeting on AMICO Corp.
-
-After: clergy and church leaders
-
-Before: Men and women, including Prince "Big Blue" Bruce and Mrs. Bruce gathered around their son, John N. Bruce in U. S. Army uniform and holding little boy, in Bruce home, Rose Street
-
-After: Men and women in U. S. Army uniform in Bruce home , Rose Street
-
-Before: Board of Education of Central Baptist Church members, seated, from left: Josephine Moore, Edith Venable, guest of honor; Rev. W. Augustus Jones, Mrs. Isaac Green, and Bell Lunn; standing:  A.D. Taylor, Andrew Brookins, Catherine Graham, Robert Bailey, Evelyn Young, Isaac Willoughby, Christine Jones, Jack Fisher, Oplenell Rockamore, Clarence Payne, and Helen Thompson, gathered in Central Baptist Church for baby shower, another version
-
-After: Board of Education in Central Baptist Church
-
-**Future Work:** Standardizing to use approved verbs. Combining with NER to correctly identify locations. 
