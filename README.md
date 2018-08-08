@@ -8,7 +8,7 @@ Our Week of Play participants included:
 
 * Dominique Luster, Neil Kulas, and Travis from CMOA 
 * Golan Levin from CMU's Frank-Ratchye STUDIO for Creative Inquiry
-* Jesse Hixon and Patrick Burke from Carney
+* Jesse Hixson and Patrick Burke from Carney
 * Sam Ticknor and Caroline Record from the CMP Innovation Studio
 
 During the week we explored four areas: Auto shortening titles, cleaning up existing subject headings, extracting names and and locations from descriptions using NER, and verifying face recognition data using Amazon Mechanical Turk. 
