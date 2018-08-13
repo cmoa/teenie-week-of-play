@@ -37,9 +37,12 @@ Correctly removing location qualifiers and suggest an approved subject heading f
 **Approach:** We used the Python modules Spacy and Textacy to break each description down into a part of speech. It detects the root phrase and all it's dependencies and removes all other unnessesary phrases.
 
 **Results:**
-|Before|After|
-|--|--|
-|Eight members of Ebenezer Little Rens basketball team posed in gymnasium|Eight members of Ebenezer Little Rens basketball team in gymnasiumthat|
+
+
+
+| Before | After |
+|---|---|
+|Eight members of Ebenezer Little Rens basketball team posed in gymnasium|Eight members of Ebenezer Little Rens basketball team in gymnasium that|
 |Group portrait of fifteen South Hills High School basketball players, kneeling, left to right: John Bolla, Ray Sineway, John Carr, Henry Hemphill, Paul Rue and John Patterson; standing: Harry Guldatti, Tony Jeffries, Ken wade, Cal Jones, Paul Dorsett, Coach Bruce J. Weston, Carl Wade, Ulna Calloway, Jack Kress, and Andy Dick|fifteen South Hills High School basketball players
 |Children, including Cub Scouts and Brownies, posing on grandstand with television personalities Lolo and Marty Wolfson, with sign for TV Safety Rangers, at WTAE studio|Children at WTAE studio
 |Mal Goode, and woman posing beside Dodge car, at 1959 Pittsburgh Courier Home Service Fair, Syria Mosque|Mal Goode and woman at 1959 Pittsburgh Courier Home Service Fair , Syria Mosque
@@ -58,27 +61,21 @@ Correctly removing location qualifiers and suggest an approved subject heading f
 
 **Results:** Stanford’s NER (S-NER) worked significantly better than the one built into NLTK. Based off a sample size of 100 the S-NER extracted all the names successfully 73% of the time. When it did fail it was most often because of a location being confused for a name, read [NER Readme](NER/README.md) for more details.
 
-Here are a a few cases of where Natural Entity Recognition succeeded:
+Success examples: 
 
-* Pittsburgh Pirates baseball team manager Fred Haney posing with Birmingham Black Barons player Dwight Smallwood, at Forbes Field
-	* Names extracted: Fred Haney, Dwight Smallwood
+| Title | Extracted Names |
+|---|---|
+| Pittsburgh Pirates baseball team manager Fred Haney posing with Birmingham Black Barons player Dwight Smallwood, at Forbes Field | Fred Haney, Dwight Smallwood |
+| Group portrait of Grace Memorial Presbyterian Church basketball players, front row from left: David Cook, William Hicks, Alfred Hunt, Joe Baber and Crocker; back row: coach Joe Baber, Nolan, Ronald Moon, C. Paige, and  Walter Boon, posed in Herron Hill gym | Names extracted: David Cook, William Hicks, Alfred Hunt, Joe Baber, Crocker, Joe Baber, Ronald Moon, C. Paige, Walter Boon |
+| Mal Goode, and woman posing beside Dodge car, at 1959 Pittsburgh Courier Home Service Fair, Syria Mosque | Mal Goode
 
-* Group portrait of Grace Memorial Presbyterian Church basketball players, front row from left: David Cook, William Hicks, Alfred Hunt, Joe Baber and Crocker; back row: coach Joe Baber, Nolan, Ronald Moon, C. Paige, and  Walter Boon, posed in Herron Hill gym
-	* Names extracted: David Cook, William Hicks, Alfred Hunt, Joe Baber, Crocker, Joe Baber, Ronald Moon, C. Paige, Walter Boon
+Failure Examples:
 
-* Mal Goode, and woman posing beside Dodge car, at 1959 Pittsburgh Courier Home Service Fair, Syria Mosque
-	* Names extracted: Mal Goode
-
-Here are a few where it failed to extract the names correctly:
-
-* Children, some in bathing suits, possibly including Rebecca Tab in center, Vernon Vaughn in light colored top, and Sara Mae Allen in back, standing on Webster Avenue under spray from fire hose, near Webster Avenue firehouse at Wandless Street, Hill District
-	* Names extracted: Rebecca Tab, Vernon Vaughn, Sara Mae Allen, Hill District
-
-* Boxer “Jersey” Joe Walcott with baby on lap getting haircut from barber Clarence “Speedy” Williams in Crystal Barber Shop
-	* Names extracted: Boxer, Joe Walcott, Clarence, Williams
-
-* Eddie Cooper and Wilhelmina handing out samples to women carrying basket style purses, behind Pepsi and Teem booth, at 1963 Pittsburgh Courier - WAMO, Home-A-Rama fair, Syria Mosque
-	* Names extracted: Eddie Cooper, Wilhelmina, Home-A-Rama
+| Title | Extracted Names |
+|---|---|
+| Children, some in bathing suits, possibly including Rebecca Tab in center, Vernon Vaughn in light colored top, and Sara Mae Allen in back, standing on Webster Avenue under spray from fire hose, near Webster Avenue firehouse at Wandless Street, Hill District | Rebecca Tab, Vernon Vaughn, Sara Mae Allen, Hill District |
+| Boxer “Jersey” Joe Walcott with baby on lap getting haircut from barber Clarence “Speedy” Williams in Crystal Barber Shop | Boxer, Joe Walcott, Clarence, Williams |
+| Eddie Cooper and Wilhelmina handing out samples to women carrying basket style purses, behind Pepsi and Teem booth, at 1963 Pittsburgh Courier - WAMO, Home-A-Rama fair, Syria Mosque | Eddie Cooper, Wilhelmina, Home-A-Rama |
 
 **Future Work:** This is a promising approach for applying a simple technique to  clean archival metadata. It would improve the script significantly to give it a list of Pittsburgh locations to check against and to teach it to recognize nick-names. Doing the process of separating names from the larger description is essential to bridging the gap between the STFCI’s work visually identifying the figures in the image and linking those figures with an actual name.
 
