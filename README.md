@@ -2,7 +2,7 @@
 
 This repository contains the code from one week of intensive programming dedicated to testing, experimenting, and documenting the limitations and capabilities of machine learning, text parsing, and crowdsourcing technologies on making a meaningful contribution to the archival metadata of the [Teenie Harris Archive](https://cmoa.org/art/teenie-harris-archive/).
 
-This project builds off of the significant advances made from the [CMU NEH Grant for Advacned Computer Analysis of Teenie Harris Archives](https://www.cmu.edu/news/stories/archives/2017/september/neh-grant.html) by Zarhia Howard, Golan Levin, and David Newbury at the STUDIO for Creative Inquiry (STFCI).
+This project builds off of the significant advances made from the [CMU NEH Grant for Advanced Computer Analysis of Teenie Harris Archives](https://www.cmu.edu/news/stories/archives/2017/september/neh-grant.html) by Zarhia Howard, Golan Levin, and David Newbury at the STUDIO for Creative Inquiry (STFCI).
 
 The Teenie Week of Play participants included:
 
@@ -11,7 +11,7 @@ The Teenie Week of Play participants included:
 * Jesse Hixson and Patrick Burke from Carney
 * Sam Ticknor and Caroline Record from the CMP Innovation Studio
 
-During the week we explored four areas: Auto shortening titles, cleaning up existing subject headings, extracting names and locations from descriptions using Named Entity Recognition (NER), and verifying face recognition data using [Amazon Mechanical Turk](amazon mechanical turk).
+During the week we explored four areas: Auto shortening titles, cleaning up existing subject headings, extracting names and locations from descriptions using Named Entity Recognition (NER), and verifying face recognition data using Amazon Mechanical Turk.
 
 ## Subject Headings
 
@@ -22,9 +22,6 @@ During the week we explored four areas: Auto shortening titles, cleaning up exis
 **Results:** Correctly removing location qualifiers and suggest an approved subject heading.
 ![Subject headings 2](README-Assets/subjectHeading-1.png)
 
-Removing location qualifiers and generating a possibly racist suggestions on coaches. 
-![Subject headings 1](README-Assets/subjectHeading-2.png)
-
 Correctly removing location qualifiers and suggest an approved subject heading for Selma Burke.
 ![Subject headings 1](README-Assets/subjectHeading-3.png)
 
@@ -34,7 +31,7 @@ Correctly removing location qualifiers and suggest an approved subject heading f
 
 **Rational:** The titles are currently paragraph descriptions and too long to use on many labels/credits. Currently Dominique has to manually shorten each title on an as needed basis. To reduce this work load and lay the ground work for applying it across the collection, we investigated automatically suggesting shortened titles.
 
-**Approach:** We used the Python modules Spacy and Textacy to break each description down into a part of speech. It detects the root phrase and all it's dependencies and removes all other unnessesary phrases.
+**Approach:** We used the Python modules Spacy and Textacy to break each description down into a part of speech. It detects the root phrase and all its dependencies and removes all other unnecessary phrases.
 
 **Results:**
 
@@ -42,7 +39,7 @@ Correctly removing location qualifiers and suggest an approved subject heading f
 
 | Before | After |
 |---|---|
-|Eight members of Ebenezer Little Rens basketball team posed in gymnasium|Eight members of Ebenezer Little Rens basketball team in gymnasium that|
+|Eight members of Ebenezer Little Rens basketball team posed in gymnasium|Eight members of Ebenezer Little Rens basketball team in gymnasium|
 |Group portrait of fifteen South Hills High School basketball players, kneeling, left to right: John Bolla, Ray Sineway, John Carr, Henry Hemphill, Paul Rue and John Patterson; standing: Harry Guldatti, Tony Jeffries, Ken wade, Cal Jones, Paul Dorsett, Coach Bruce J. Weston, Carl Wade, Ulna Calloway, Jack Kress, and Andy Dick|fifteen South Hills High School basketball players
 |Children, including Cub Scouts and Brownies, posing on grandstand with television personalities Lolo and Marty Wolfson, with sign for TV Safety Rangers, at WTAE studio|Children at WTAE studio
 |Mal Goode, and woman posing beside Dodge car, at 1959 Pittsburgh Courier Home Service Fair, Syria Mosque|Mal Goode and woman at 1959 Pittsburgh Courier Home Service Fair , Syria Mosque
@@ -81,10 +78,10 @@ Failure Examples:
 
 ## Mechanical Turk
 
-**Rational:** The STFCI applied face recognition across the entire collection and generated 3452 potential matches. Each match comes with a score of how strong the match is. This process generated a range of results.Some matches are simply duplicates of images across the collections.
+**Rational:** The STFCI applied face recognition across the entire collection and generated 3452 potential matches. Each match comes with a score of how strong the match is. This process generated a range of results. Some matches are simply duplicates of images across the collections.
 Some matches are slightly different images from the same shoot.
 ![Black and white photos of two young children with similar faces but different expressions](README-Assets/yes.jpg)
-Some matches “the holy grails” appear to identify the same people in totally different locations a contexts.
+Some matches “the holy grails” appear to identify the same people in totally different locations and contexts.
 ![Black and white photos featuring a woman dancing with similar faces but different expressions](README-Assets/grail.png)
 ![Black and white photos featuring a woman in a group photo with similar faces but different expressions and different clothing](README-Assets/grail3.jpg)
 Some matches are incorrect, matching people of different genders and ages.
