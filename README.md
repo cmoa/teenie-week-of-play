@@ -6,7 +6,7 @@ This project builds off of the significant advances made from the [CMU NEH Grant
 
 The Teenie Week of Play participants included:
 
-* Dominique Luster, Neil Kulas, and Travis Snyder from CMOA 
+* Dominique Luster (this is a test), Neil Kulas, and Travis Snyder from CMOA 
 * Golan Levin from CMU’s Frank-Ratchye STUDIO for Creative Inquiry
 * Jesse Hixson and Patrick Burke from Carney
 * Sam Ticknor and Caroline Record from the CMP Innovation Studio
