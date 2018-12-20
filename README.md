@@ -6,10 +6,10 @@ This project builds off of the significant advances made from the [CMU NEH Grant
 
 The Teenie Week of Play participants included:
 
-* Dominique Luster (this is a test), Neil Kulas, and Travis Snyder from CMOA 
-* Golan Levin from CMU’s Frank-Ratchye STUDIO for Creative Inquiry
-* Jesse Hixson and Patrick Burke from Carney
-* Sam Ticknor and Caroline Record from the CMP Innovation Studio
+* Dominique Luster, Neil Kulas, and Travis Snyder from [Carnegie Museum of Art](https://cmoa.org) 
+* Golan Levin from CMU’s [Frank-Ratchye STUDIO for Creative Inquiry](http://studioforcreativeinquiry.org)
+* Jesse Hixson and Patrick Burke from [Carney](https://carney.co)
+* Sam Ticknor and Caroline Record from the [Innovation Studio](https://studio.carnegiemuseums.org)
 
 During the week we explored four areas: Auto shortening titles, cleaning up existing subject headings, extracting names and locations from descriptions using Named Entity Recognition (NER), and verifying face recognition data using Amazon Mechanical Turk.
 
